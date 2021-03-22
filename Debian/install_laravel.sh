@@ -50,7 +50,7 @@ bash -c 'echo "SWOOLE_HTTP_DAEMONIZE=true" >> .env'
 chown -R :www-data /var/www/laravel/storage/
 chown -R :www-data /var/www/laravel/bootstrap/cache/
 chmod -R 0777 /var/www/laravel/storage/
-chmod -R 0775 /var/www/laravel/bootstrap/cache/
+chmod -R 0777 /var/www/laravel/bootstrap/cache/
 chown -R www-data.www-data /var/www/laravel/storage
 chown -R www-data.www-data /var/www/laravel/bootstrap/cache
 mkdir -p /var/www/laravel
