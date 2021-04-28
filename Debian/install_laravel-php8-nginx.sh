@@ -41,7 +41,7 @@ service nginx stop
 rm /etc/nginx/sites-available/default
 rm /etc/nginx/sites-enabled/default
 rm -rf /var/www/html
-cp laravel.conf /etc/nginx/sites-available/laravel.conf
+cp /home/mateus/laravel.conf /etc/nginx/sites-available/laravel.conf
 ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
 service php8.0-fpm start
 # Instalando e criando supervisor para laravel
