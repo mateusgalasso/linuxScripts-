@@ -41,43 +41,7 @@ service nginx stop
 rm /etc/nginx/sites-available/default
 rm /etc/nginx/sites-enabled/default
 rm -rf /var/www/html
-# cp /var/www/laravel /etc/nginx/sites-available/laravel -r
-bash -c 'printf "
-server {
-    listen 80;
-    server_name www.mysite.com mysite.com;
-    root /var/www/laravel/public;
-
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
-    add_header X-Content-Type-Options "nosniff";
-
-    index index.html index.htm index.php;
-
-    charset utf-8;
-
-    location / {
-        root /var/www/laravel/dist;
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
-
-    error_page 404 /;
-
-    location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.0-fpm.sock;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-
-    location ~ /\.(?!well-known).* {
-        deny all;
-    }
-}
-" > /etc/nginx/sites-available/laravel.conf'
+cp laravel.conf /etc/nginx/sites-available/laravel.conf
 ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
 service php8.0-fpm start
 # Instalando e criando supervisor para laravel
