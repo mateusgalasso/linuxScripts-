@@ -27,6 +27,18 @@ service redis-server start
 # Instala Laravel
 cd /var/www/
 composer create-project --no-interaction --prefer-dist laravel/laravel laravel
+cd laravel
+# Instala Swoole
+pecl install -D 'enable-sockets="no" enable-openssl="yes" enable-http2="yes" enable-mysqlnd="yes" enable-swoole-json="no" enable-swoole-curl="yes"' swoole
+
+# Adiciona swoolenas extensions do php
+# php -i | grep php.ini
+echo "extension=swoole">/etc/php/8.0/cli/conf.d/20-swoole.ini
+# php -m | grep swoole
+
+# adiciona laravel swoole
+composer require swooletw/laravel-swoole
+
 # da permissoes
 chown -R :www-data /var/www/laravel/storage/
 chown -R :www-data /var/www/laravel/bootstrap/cache/
@@ -43,31 +55,10 @@ rm /etc/nginx/sites-enabled/default
 rm -rf /var/www/html
 cp /home/mateus/laravel.conf /etc/nginx/sites-available/laravel.conf
 ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
-
-
+service php8.0-fpm start
 # Instalando e criando supervisor para laravel
 apt-get install supervisor
-# PHP-fpm
-bash -c 'printf "[program:php-fpm8]
-command=service php8.0-fpm start
-autostart=true
-autorestart=true
-user=root
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/var/www/laravel/storage/logs/php-fpm.log" > /etc/supervisor/conf.d/php-fpm.conf'
-
-# nginx
-bash -c 'printf "[program:nginx]
-command=service nginx restart
-autostart=true
-autorestart=true
-user=root
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/var/www/laravel/storage/logs/nginx.log" > /etc/supervisor/conf.d/nginx.conf'
-
-# Queue workers
+# Queue Superficos
 bash -c 'printf "[program:laravel-worker]
 process_name=laravel_worker
 command=php /var/www/laravel/artisan queue:work --sleep=3 --tries=3
@@ -79,7 +70,6 @@ redirect_stderr=true
 stdout_logfile=/var/www/laravel/storage/logs/worker.log
 stopwaitsecs=3600" > /etc/supervisor/conf.d/laravel-worker.conf'
 service supervisor start
-
 # Lembrar de alterar o usuário no final do comando
 bash -c 'echo "* * * * * /var/www/laravel && php artisan schedule:run >> /dev/null 2>&1" >>  /var/spool/cron/crontabs/mateus'
 service cron start
