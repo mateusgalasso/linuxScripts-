@@ -45,12 +45,14 @@ cp /home/mateus/laravel.conf /etc/nginx/sites-available/laravel.conf
 ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
 
 # Inicia php fpm
-service php8.0-fpm start
-
+# sudo systemctl start php8.0-fpm
+# sudo systemctl enable php8.0-fpm
+sudo service php8.0-fpm start
+sudo update-rc.d php8.0-fpm defaults
+sudo update-rc.d php8.0-fpm enable
 
 # Instalando e criando supervisor para laravel
 apt-get install supervisor
-
 
 # Queue workers
 bash -c 'printf "[program:laravel-worker]
@@ -63,20 +65,31 @@ numprocs=1
 redirect_stderr=true
 stdout_logfile=/var/www/laravel/storage/logs/worker.log
 stopwaitsecs=3600" > /etc/supervisor/conf.d/laravel-worker.conf'
-sudo service supervisor start
 
 # Lembrar de alterar o usuário no final do comando
 bash -c 'echo "* * * * * /var/www/laravel && php artisan schedule:run >> /dev/null 2>&1" >>  /var/spool/cron/crontabs/mateus'
 service cron start
 apt autoremove -y
+
 # Adiciona algumas coisas no supervisor
 sudo touch /var/run/supervisor.sock
 sudo chmod 777 /var/run/supervisor.sock
 echo_supervisord_conf > /etc/supervisord.conf
 sudo supervisord -c /etc/supervisord.conf
-sudo systemctl enable supervisor
-sudo systemctl enable php8.0-fpm
-sudo systemctl enable nginx
-sudo service supervisor restart
-sudo service nginx restart
+
+# # Instala systemctl para o wls2
+# git clone https://github.com/DamionGans/ubuntu-wsl2-systemd-script.git
+# cd ubuntu-wsl2-systemd-script/
+# bash ubuntu-wsl2-systemd-script.sh
+# Inicia servicos
+# sudo systemctl start supervisor
+# sudo systemctl enable supervisor
+sudo service supervisor start
+sudo update-rc.d supervisor defaults
+sudo update-rc.d supervisor enable
+# sudo systemctl start nginx
+# sudo systemctl enable nginx
+sudo service nginx start
+sudo update-rc.d nginx defaults
+sudo update-rc.d nginx enable
 exit
