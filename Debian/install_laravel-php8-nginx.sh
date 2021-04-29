@@ -44,28 +44,13 @@ rm -rf /var/www/html
 cp /home/mateus/laravel.conf /etc/nginx/sites-available/laravel.conf
 ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
 
+# Inicia php fpm
+service php8.0-fpm start
+
 
 # Instalando e criando supervisor para laravel
 apt-get install supervisor
-# PHP-fpm
-bash -c 'printf "[program:php-fpm8]
-command=service php8.0-fpm start
-autostart=true
-autorestart=true
-user=root
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/var/www/laravel/storage/logs/php-fpm.log" > /etc/supervisor/conf.d/php-fpm.conf'
 
-# nginx
-bash -c 'printf "[program:nginx]
-command=service nginx restart
-autostart=true
-autorestart=true
-user=root
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/var/www/laravel/storage/logs/nginx.log" > /etc/supervisor/conf.d/nginx.conf'
 
 # Queue workers
 bash -c 'printf "[program:laravel-worker]
@@ -78,7 +63,7 @@ numprocs=1
 redirect_stderr=true
 stdout_logfile=/var/www/laravel/storage/logs/worker.log
 stopwaitsecs=3600" > /etc/supervisor/conf.d/laravel-worker.conf'
-service supervisor start
+sudo service supervisor start
 
 # Lembrar de alterar o usuário no final do comando
 bash -c 'echo "* * * * * /var/www/laravel && php artisan schedule:run >> /dev/null 2>&1" >>  /var/spool/cron/crontabs/mateus'
@@ -89,6 +74,9 @@ sudo touch /var/run/supervisor.sock
 sudo chmod 777 /var/run/supervisor.sock
 echo_supervisord_conf > /etc/supervisord.conf
 sudo supervisord -c /etc/supervisord.conf
+sudo systemctl enable supervisor
+sudo systemctl enable php8.0-fpm
+sudo systemctl enable nginx
 sudo service supervisor restart
-service nginx restart
+sudo service nginx restart
 exit

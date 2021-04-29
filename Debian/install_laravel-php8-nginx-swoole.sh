@@ -35,10 +35,7 @@ pecl install -D 'enable-sockets="no" enable-openssl="yes" enable-http2="yes" ena
 # php -i | grep php.ini
 echo "extension=swoole">/etc/php/8.0/cli/conf.d/20-swoole.ini
 # php -m | grep swoole
-
-# adiciona laravel swoole
-composer require swooletw/laravel-swoole
-
+composer require swooletw/laravel-swoole -n
 # da permissoes
 chown -R :www-data /var/www/laravel/storage/
 chown -R :www-data /var/www/laravel/bootstrap/cache/
@@ -53,12 +50,24 @@ service nginx stop
 rm /etc/nginx/sites-available/default
 rm /etc/nginx/sites-enabled/default
 rm -rf /var/www/html
-cp /home/mateus/laravel.conf /etc/nginx/sites-available/laravel.conf
+cp /home/mateus/laravel-swoole.conf /etc/nginx/sites-available/laravel.conf
 ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/
-service php8.0-fpm start
+
 # Instalando e criando supervisor para laravel
 apt-get install supervisor
-# Queue Superficos
+
+# laravel-swoole
+bash -c 'printf "[program:laravel-swoole]
+process_name=laravel_swoole
+command=php /var/www/laravel/artisan swoole:http start
+autorestart=true
+autorestart=true
+user=root
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/laravel/storage/logs/laravel-swoole.log" > /etc/supervisor/conf.d/laravel-swoole.conf'
+
+# Queue workers
 bash -c 'printf "[program:laravel-worker]
 process_name=laravel_worker
 command=php /var/www/laravel/artisan queue:work --sleep=3 --tries=3
@@ -69,16 +78,28 @@ numprocs=1
 redirect_stderr=true
 stdout_logfile=/var/www/laravel/storage/logs/worker.log
 stopwaitsecs=3600" > /etc/supervisor/conf.d/laravel-worker.conf'
-service supervisor start
+
 # Lembrar de alterar o usuário no final do comando
 bash -c 'echo "* * * * * /var/www/laravel && php artisan schedule:run >> /dev/null 2>&1" >>  /var/spool/cron/crontabs/mateus'
 service cron start
 apt autoremove -y
+
 # Adiciona algumas coisas no supervisor
 sudo touch /var/run/supervisor.sock
 sudo chmod 777 /var/run/supervisor.sock
 echo_supervisord_conf > /etc/supervisord.conf
 sudo supervisord -c /etc/supervisord.conf
-sudo service supervisor restart
-service nginx restart
+# # Instala systemctl para o wls2
+# git clone https://github.com/DamionGans/ubuntu-wsl2-systemd-script.git
+# cd ubuntu-wsl2-systemd-script/
+# bash ubuntu-wsl2-systemd-script.sh
+# Inicia servicos
+sudo systemctl start supervisor
+sudo systemctl enable supervisor
+sudo update-rc.d supervisor defaults
+sudo update-rc.d supervisor enable
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo update-rc.d nginx defaults
+sudo update-rc.d nginx enable
 exit
