@@ -26,7 +26,8 @@ php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 service redis-server start
 # Instala Laravel
 cd /var/www/
-composer create-project --no-interaction --prefer-dist laravel/laravel laravel
+# composer create-project --no-interaction --prefer-dist laravel/laravel laravel
+git clone http://git.fbb.org.br:80/FBB/SIGA-Nova.git laravel
 cd laravel
 # Instala Swoole
 pecl install -D 'enable-sockets="no" enable-openssl="yes" enable-http2="yes" enable-mysqlnd="yes" enable-swoole-json="no" enable-swoole-curl="yes"' swoole
