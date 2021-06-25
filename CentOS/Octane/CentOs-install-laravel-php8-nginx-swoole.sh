@@ -25,13 +25,13 @@ rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 yum -y install yum-utils
 yum-config-manager --disable 'remi-php*'
 yum-config-manager --enable remi-php80
-yum -y install php php-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,pear,devel}
+yum -y install php php-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,pear,devel,redis}
 #  'instala extensions'
 yum -y install curl git unzip supervisor gcc glibc-headers gcc-c++ openssl-devel epel-release
 #  'COMPOSER'
-# curl -sS https://getcomposer.org/installer | php 
+curl -sS https://getcomposer.org/installer | php 
 sudo mv composer.phar /usr/bin/composer
-chmod +x/usr/bin/composer
+chmod +x /usr/bin/composer
 
 
 #===== Instala Swoole ========
@@ -40,17 +40,17 @@ pecl install -D 'enable-sockets="no" enable-openssl="no" enable-http2="no" enabl
 # Adiciona swoolenas extensions do php
 # php -i | grep php.ini
 echo "extension=swoole">/etc/php.ini
-# php -m | grep swoole
+# 	
 
 
 
 # Instala Laravel
 cd /var/www/
 # composer create-project --no-interaction --prefer-dist laravel/laravel laravel
-git clone http://172.16.10.33:80/FBB/SIGA-Nova.git laravel
+git clone git@pxl0hosp0811.dispositivos.bb.com.br:fbb/ajuda-humanitaria.git laravel
 cd laravel
 composer install --no-dev --no-interaction
-cp .env.example .env
+cp .env.producao .env
 
 # da permissoes
 chown -R nginx:root /var/www/laravel/storage/
@@ -111,7 +111,7 @@ redirect_stderr=true
 stdout_logfile=/var/www/laravel/storage/logs/worker.log
 stopwaitsecs=3600" > /etc/supervisord.d/laravel-worker.ini'
 
-#Octane
+# Octane
 bash -c 'printf "[program:laravel-octane]
 process_name=laravel-octane
 command=php /var/www/laravel/artisan octane:start
@@ -122,6 +122,18 @@ numprocs=1
 redirect_stderr=true
 stdout_logfile=/var/www/laravel/storage/logs/octane.log
 stopwaitsecs=3600" > /etc/supervisord.d/laravel-octane.ini'
+
+#  HORIZON 
+bash -c 'printf "[program:laravel-horizon]
+process_name=laravel-horizon
+command=php /var/www/laravel/artisan horizon
+autostart=true
+autorestart=true
+user=root
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/laravel/storage/logs/horizon.log
+stopwaitsecs=3600" > /etc/supervisord.d/laravel-horizon.ini'
 
 supervisord -c /etc/supervisord.conf
 
@@ -134,6 +146,8 @@ supervisorctl update
 # 6. start the queue worker:
 supervisorctl start laravel-worker:*
 supervisorctl start laravel-octane:*
+supervisorctl start laravel-horizon:*
+
 
 #pra ver se esta funcionandoo
 #supervisorctl status
@@ -146,4 +160,20 @@ systemctl restart crond.service
 # Inicia servicos
 systemctl start nginx
 systemctl enable nginx
+
+# ============== install docker ===================
+# https://docs.docker.com/engine/install/centos/
+yum install -y yum-utils
+yum-config-manager yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo  
+yum install -y docker-ce docker-ce-cli containerd.io
+systemctl start docker
+systemctl enable docker.service
+systemctl enable containerd.service
+groupadd docker
+usermod -aG docker deployer
+# =============== MEILISEARCH =================
+docker run -d --rm -p 7700:7700     -v $(pwd)/data.ms:/data.ms     getmeili/meilisearch
+
 exit
