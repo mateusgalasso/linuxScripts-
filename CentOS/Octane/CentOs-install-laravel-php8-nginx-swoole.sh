@@ -34,22 +34,22 @@ sudo mv composer.phar /usr/bin/composer
 chmod +x /usr/bin/composer
 
 
-#===== Instala Swoole ========
+#===== Instala Swoole ==================================================
 pecl install -D 'enable-sockets="no" enable-openssl="no" enable-http2="no" enable-mysqlnd="no" enable-swoole-json="no" enable-swoole-curl="no"' swoole
 
 # Adiciona swoolenas extensions do php
 # php -i | grep php.ini
 echo "extension=swoole">/etc/php.ini
-# 	
+#======================================================================== 	
 
 
 
-# Instala Laravel
+# ========================Instala Laravel=============================
 cd /var/www/
 # composer create-project --no-interaction --prefer-dist laravel/laravel laravel
 git clone git@pxl0hosp0811.dispositivos.bb.com.br:fbb/ajuda-humanitaria.git laravel
 cd laravel
-composer install --no-dev --no-interaction
+composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 cp .env.producao .env
 
 # da permissoes
@@ -59,14 +59,16 @@ chown -R nginx:nginx /var/www/laravel
 chown -R nginx:nginx /var/www/laravel/storage/
 chmod -R 755 storage
 chmod -R 755 bootstrap/cache
+chmod -R 755 .
+
 
 # Configura nginx
-sudo systemctl stop  nginx
+sudo systemctl stop nginx
 sudo systemctl enable nginx
 rm -rf /var/www/html
 cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
-cp laravel.conf /etc/nginx/conf.d/laravel.conf
-cp laravel.conf /etc/nginx/nginx.conf
+cp nginx.conf /etc/nginx/conf.d/laravel.conf
+cp nginx.conf /etc/nginx/nginx.conf
 
 #Install 'policycoreutils-python' 
 yum -y install policycoreutils-python
@@ -173,7 +175,15 @@ systemctl enable docker.service
 systemctl enable containerd.service
 groupadd docker
 usermod -aG docker deployer
+newgrp docker
+install docker-compose
 # =============== MEILISEARCH =================
+cd
 docker run -d --rm -p 7700:7700     -v $(pwd)/data.ms:/data.ms     getmeili/meilisearch
+
+# ================ NODEJS ==================
+sudo yum install -y centos-release-scl-rh
+sudo yum install -y rh-nodejs10
+scl enable rh-nodejs10 bash
 
 exit
