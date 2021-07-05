@@ -39,7 +39,11 @@ pecl install -D 'enable-sockets="no" enable-openssl="no" enable-http2="no" enabl
 
 # Adiciona swoolenas extensions do php
 # php -i | grep php.ini
-echo "extension=swoole">/etc/php.ini
+bash -c 'printf "extension=swoole
+allow_url_fopen=off
+expose_php=off
+log_errors=on" > /etc/php.ini'
+
 #======================================================================== 	
 
 
@@ -176,7 +180,7 @@ systemctl enable containerd.service
 groupadd docker
 usermod -aG docker deployer
 newgrp docker
-install docker-compose
+yum install -y docker-compose
 # =============== MEILISEARCH =================
 cd
 docker run -d --rm -p 7700:7700     -v $(pwd)/data.ms:/data.ms     getmeili/meilisearch
