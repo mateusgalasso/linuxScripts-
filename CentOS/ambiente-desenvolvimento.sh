@@ -54,6 +54,12 @@ git checkout staging
 composer install --no-interaction --prefer-dist --optimize-autoloader
 cp .env.example .env
 
+# ================ NODEJS ==================
+sudo yum install -y centos-release-scl-rh
+sudo yum install -y rh-nodejs10
+scl enable rh-nodejs10 bash
+npm install
+
 #=========== ajusta permimssões ================
 chmod -R 775 .
 
@@ -75,4 +81,6 @@ semanage fcontext -a -t httpd_sys_rw_content_t '/var/www/laravel/tests(/.*)?'
 restorecon -Rv '/var/www/laravel/'
 
 alias sail='bash vendor/bin/sail'
+sail up -d
+sail artisan migrate:fresh --seed
 exit
