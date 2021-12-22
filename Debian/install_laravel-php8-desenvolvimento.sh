@@ -4,7 +4,7 @@
 # sudo su
 ###########################################################
 #  'Update and Upgrade'
-sudo apt update && apt upgrade -y
+sudo apt update && sudo apt upgrade -y
 #  'instala uns programas básicos'
 sudo apt install -y wget unzip libpng-dev
 sudo apt install -y lsb-release ca-certificates apt-transport-https software-properties-common
