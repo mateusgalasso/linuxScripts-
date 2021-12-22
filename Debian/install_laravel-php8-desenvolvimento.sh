@@ -16,7 +16,7 @@ sudo apt update
 #  'instala php 8'
 sudo apt upgrade -y && apt -y install php
 #  'instala extensions'
-sudo apt -y install curl php-mbstring git unzip php8.0-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,sqlite}
+sudo apt -y install curl php-mbstring git unzip php8.0-{common,mysql,xml,redis,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,sqlite}
 #  'more php' 
 sudo apt-get -y install php8.0-sqlite php-xml php-xml unixodbc-dev gnupg
 # wrk
@@ -25,14 +25,14 @@ sudo sh -c "echo 'precedence ::ffff:0:0/96 100' >> /etc/gai.conf"
 sudo wget -O composer-setup.php https://getcomposer.org/installer
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
-git clone http://pxl0hosp0811.dispositivos.bb.com.br/fbb/siga.git laravel
-cd laravel 
+git clone --branch staging http://gitlab.fbb.org.br/fbb/siga.git
+cd siga
 composer install
 alias sail='bash vendor/bin/sail'
 # ============== instala node
-apt-get install- y software-properties-common 
+sudo apt-get install- y software-properties-common 
 curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - 
-apt-get install -y nodejs
+sudo apt-get install -y nodejs
 npm install
 # da permissoes
 chown -R 0777 .
