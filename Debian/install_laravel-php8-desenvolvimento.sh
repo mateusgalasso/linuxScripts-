@@ -35,7 +35,7 @@ curl -sL https://deb.nodesource.com/setup_16.x | sudo bash -
 sudo apt-get install -y nodejs
 npm install
 # da permissoes
-chown -R 0777 .
+sudo chmod -R 0777 .
 
 apt autoremove -y
 cp .env.example .env
