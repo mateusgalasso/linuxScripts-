@@ -14,7 +14,7 @@ sudo echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /et
 #  'update novamente'
 sudo apt update
 #  'instala php 8'
-sudo apt upgrade -y && apt -y install php
+sudo apt upgrade -y && sudo apt -y install php
 #  'instala extensions'
 sudo apt -y install curl php-mbstring git unzip php8.0-{common,mysql,xml,redis,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,sqlite}
 #  'more php' 
