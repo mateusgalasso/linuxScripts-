@@ -31,7 +31,7 @@ composer install
 alias sail='bash vendor/bin/sail'
 # ============== instala node
 sudo apt-get install- y software-properties-common 
-curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - 
+curl -sL https://deb.nodesource.com/setup_16.x | sudo bash - 
 sudo apt-get install -y nodejs
 npm install
 # da permissoes
