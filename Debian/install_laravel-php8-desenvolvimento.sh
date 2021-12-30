@@ -16,7 +16,7 @@ sudo apt update
 #  'instala php 8'
 sudo apt upgrade -y && sudo apt -y install php
 #  'instala extensions'
-sudo apt -y install curl php-mbstring git unzip php8.0-{common,mysql,xml,redis,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,sqlite}
+sudo apt -y install curl php-mbstring git unzip php8.0-{common,mysql,xml,redis,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap}
 #  'more php' 
 sudo apt-get -y install php8.0-sqlite php-xml php-xml unixodbc-dev gnupg
 # wrk
