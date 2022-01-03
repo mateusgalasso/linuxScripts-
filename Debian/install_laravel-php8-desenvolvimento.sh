@@ -26,10 +26,12 @@ sudo sh -c "echo 'precedence ::ffff:0:0/96 100' >> /etc/gai.conf"
 sudo wget -O composer-setup.php https://getcomposer.org/installer
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
+sudo echo "alias sail='bash vendor/bin/sail' >> ~/.bash_aliases" 
+source .bash_aliases
+
 git clone --branch staging http://gitlab.fbb.org.br/fbb/siga.git
 cd siga
 composer install
-alias sail='bash vendor/bin/sail'
 # ============== instala node
 sudo apt-get install -y software-properties-common 
 curl -sL https://deb.nodesource.com/setup_16.x | sudo bash - 
