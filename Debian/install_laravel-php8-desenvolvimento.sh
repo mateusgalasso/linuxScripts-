@@ -6,15 +6,16 @@
 #  'Update and Upgrade'
 sudo apt update && sudo apt upgrade -y
 #  'instala uns programas básicos'
-sudo apt install -y wget unzip libpng-dev
-sudo apt install -y lsb-release ca-certificates apt-transport-https software-properties-common
+sudo apt install -y git wget unzip libpng-dev lsb-release ca-certificates apt-transport-https software-properties-common gnupg gnupg2 gnupg1
 #  'adicliona mais lista de pacotes'
 sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-sudo echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+sudo echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main"\
+ | sudo tee /etc/apt/sources.list.d/sury-php.list
+wget -qO - https://packages.sury.org/php/apt.gpg | sudo apt-key add -
 #  'update novamente'
 sudo apt update
 #  'instala php 8'
-sudo apt upgrade -y && sudo apt -y install php
+sudo apt upgrade -y && sudo apt -y install php8.0
 #  'instala extensions'
 sudo apt -y install curl php-mbstring git unzip php8.0-{common,mysql,xml,redis,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap}
 #  'more php' 
@@ -30,14 +31,14 @@ cd siga
 composer install
 alias sail='bash vendor/bin/sail'
 # ============== instala node
-sudo apt-get install- y software-properties-common 
+sudo apt-get install -y software-properties-common 
 curl -sL https://deb.nodesource.com/setup_16.x | sudo bash - 
 sudo apt-get install -y nodejs
 npm install
 # da permissoes
 sudo chmod -R 0777 .
 
-apt autoremove -y
+sudo apt autoremove -y
 cp .env.example .env
 sail up -d 
 exit
