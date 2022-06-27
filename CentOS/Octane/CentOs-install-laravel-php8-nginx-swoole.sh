@@ -187,7 +187,7 @@ docker run -d --rm -p 7700:7700     -v $(pwd)/data.ms:/data.ms     getmeili/meil
 
 # ================ NODEJS ==================
 sudo yum install -y centos-release-scl-rh
-sudo yum install -y rh-nodejs10
+sudo yum install -y rh-nodejs16
 scl enable rh-nodejs10 bash
 
 exit
