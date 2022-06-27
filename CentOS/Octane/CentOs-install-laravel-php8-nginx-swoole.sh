@@ -25,7 +25,7 @@ rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 yum -y install yum-utils
 yum-config-manager --disable 'remi-php*'
 yum-config-manager --enable remi-php80
-yum -y install php php-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,pear,devel,redis}
+yum -y install php php-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,pear,devel,redis,pcntl}
 #  'instala extensions'
 yum -y install curl git unzip supervisor gcc glibc-headers gcc-c++ openssl-devel epel-release
 #  'COMPOSER'
