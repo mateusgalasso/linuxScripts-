@@ -20,10 +20,10 @@ apt update
 apt upgrade -y && apt -y install php
 
 #  'instala extensions'
-apt -y install curl php-mbstring git unzip php8.0-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,sqlite,fpm}
+apt -y install curl php-mbstring git unzip php8.1-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,sqlite,fpm}
 
 #  'more php' 
-apt-get -y install php8.0-sqlite php-xml php-xml wrk unixodbc-dev supervisor
+apt-get -y install php8.1-sqlite php-xml php-xml wrk unixodbc-dev supervisor
 
 #  'COMPOSER'
 sh -c "echo 'precedence ::ffff:0:0/96 100' >> /etc/gai.conf"
@@ -41,8 +41,8 @@ pecl install sqlsrv
 pecl install pdo_sqlsrv
 phpenmod sqlsrv pdo_sqlsrv
 # adiciona sqlserver drives nas extensions do php
-bash -c 'printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.0/mods-available/sqlsrv.ini'
-bash -c 'printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.0/mods-available/pdo_sqlsrv.ini'
+bash -c 'printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.1/mods-available/sqlsrv.ini'
+bash -c 'printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.1/mods-available/pdo_sqlsrv.ini'
 
 # Instala Redis
 service redis-server start
@@ -56,7 +56,7 @@ pecl install -D 'enable-sockets="no" enable-openssl="yes" enable-http2="yes" ena
 
 # Adiciona swoolenas extensions do php
 # php -i | grep php.ini
-echo "extension=swoole">/etc/php/8.0/cli/conf.d/20-swoole.ini
+echo "extension=swoole">/etc/php/8.1/cli/conf.d/20-swoole.ini
 # php -m | grep swoole
 composer require swooletw/laravel-swoole -n
 
