@@ -20,7 +20,7 @@ apt update
 apt upgrade -y && apt -y install php
 
 #  'instala extensions'
-apt -y install curl php-mbstring git unzip php8.1-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,sqlite,fpm}
+apt -y install curl php-mbstring git unzip php8.1-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl,bcmath,ldap,fpm}
 
 #  'more php' 
 apt-get -y install php8.1-sqlite php-xml php-xml wrk unixodbc-dev supervisor
